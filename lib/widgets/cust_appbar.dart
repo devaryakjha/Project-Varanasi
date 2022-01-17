@@ -48,7 +48,6 @@ class CustAppBar extends StatelessWidget implements PreferredSizeWidget {
                           onTap: () {
                             if (!overrideBackPressed) Get.back(result: result);
                             if (onBackPressed != null) {
-                              // ignore: prefer_null_aware_method_calls
                               onBackPressed!();
                             }
                           },
