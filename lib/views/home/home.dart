@@ -12,7 +12,7 @@ class HomeScreen extends GetView<AppController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      bottomNavigationBar: const CustNavigationBar(),
+      // bottomNavigationBar: const CustNavigationBar(),
       body: SafeArea(
         child: PageView(
           physics: const NeverScrollableScrollPhysics(),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jiosaavn_wrapper/jiosaavn_wrapper_v2.dart';
 import 'package:varanasi/enums/fetch_type.dart';
+import 'package:varanasi/enums/instrument_type.dart';
 import 'package:varanasi/repository/song_repository.dart';
 
 class SongController extends GetxController {
@@ -28,25 +29,47 @@ class SongController extends GetxController {
       repository.getInstrumentDetails(searchQuery, SearchResultType.song);
   Future<void> fetchPlaylistDetails() =>
       repository.getInstrumentDetails(searchQuery, SearchResultType.playlist);
-  List getsearchResultsValue(SearchResultType? type) {
-    switch (type) {
-      case SearchResultType.album:
-        return repository.albumSearchResults;
-      case SearchResultType.artist:
-        return repository.artistSearchResults;
-      case SearchResultType.song:
-        return repository.songSearchResults;
-      case SearchResultType.playlist:
-        return repository.playlistSearchResults;
-      default:
-        return [];
+  List getsearchResultsValue(dynamic type) {
+    if (type is Map) {
+      type = type['type'];
     }
+    if (type is SearchResultType) {
+      switch (type) {
+        case SearchResultType.album:
+          return repository.albumSearchResults;
+        case SearchResultType.artist:
+          return repository.artistSearchResults;
+        case SearchResultType.song:
+          return repository.songSearchResults;
+        case SearchResultType.playlist:
+          return repository.playlistSearchResults;
+        default:
+          return [];
+      }
+    } else if (type is InstrumentType) {
+      switch (type) {
+        case InstrumentType.album:
+          return repository.albumSearchResults;
+        case InstrumentType.artist:
+          return repository.artistSearchResults;
+        case InstrumentType.song:
+          return repository.songSearchResults;
+        case InstrumentType.playlist:
+          return repository.playlistSearchResults;
+        default:
+          return [];
+      }
+    }
+    return [];
   }
 
   GroupedArtistData? get groupedArtistData =>
       repository.groupedArtistData.value;
   Playlist? get playlisytDetails => repository.playlistData.value;
+  Album? get albumDetails => repository.albumData.value;
   Future getArtistDetails(String token) => repository.getArtistDetails(token);
+  Future getAlbumDetails(String token) => repository.getAlbumDetails(token);
+
   Future getPlaylistDetails(String token) =>
       repository.getPlaylistDetails(token);
 
@@ -54,6 +77,8 @@ class SongController extends GetxController {
       repository.fetchType.value == FetchType.groupedArtist;
   bool get isFetchingPlaylistDetails =>
       repository.fetchType.value == FetchType.playlist;
+  bool get isFetchingAlbumDetails =>
+      repository.fetchType.value == FetchType.album;
 
   clear() => repository.clear();
 

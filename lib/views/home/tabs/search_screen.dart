@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
-import 'package:get/route_manager.dart';
+import 'package:get/get.dart';
 import 'package:jiosaavn_wrapper/jiosaavn_wrapper_v2.dart';
 import 'package:lottie/lottie.dart';
 import 'package:varanasi/controllers/song_controller.dart';
@@ -9,6 +8,8 @@ import 'package:varanasi/routes/routes.dart';
 import 'package:varanasi/widgets/instrument_display_widget.dart';
 import 'package:varanasi/widgets/item_list.dart';
 import 'package:varanasi/widgets/loader.dart';
+
+import '../../../controllers/app_controller.dart';
 
 class SearchPage extends GetView<SongController> {
   const SearchPage({Key? key}) : super(key: key);
@@ -46,7 +47,7 @@ class SearchPage extends GetView<SongController> {
                           'Artists',
                           (d) => CommonListingWidget(d),
                           onSeeAllPressed: () {
-                            Get.toNamed(
+                            Get.find<AppController>().toNamed(
                               Routes.searchResultPage,
                               arguments: SearchResultType.artist,
                             );
@@ -59,7 +60,7 @@ class SearchPage extends GetView<SongController> {
                           'Songs',
                           (d) => CommonListingWidget(d),
                           onSeeAllPressed: () {
-                            Get.toNamed(
+                            Get.find<AppController>().toNamed(
                               Routes.searchResultPage,
                               arguments: SearchResultType.song,
                             );
@@ -72,7 +73,7 @@ class SearchPage extends GetView<SongController> {
                           'Albums',
                           (d) => CommonListingWidget(d),
                           onSeeAllPressed: () {
-                            Get.toNamed(
+                            Get.find<AppController>().toNamed(
                               Routes.searchResultPage,
                               arguments: SearchResultType.album,
                             );
@@ -85,7 +86,7 @@ class SearchPage extends GetView<SongController> {
                           'Playlists',
                           (d) => CommonListingWidget(d),
                           onSeeAllPressed: () {
-                            Get.toNamed(
+                            Get.find<AppController>().toNamed(
                               Routes.searchResultPage,
                               arguments: SearchResultType.playlist,
                             );

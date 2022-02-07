@@ -53,6 +53,7 @@ class SongRepository {
   RxListSong songSearchResults = RxListSong();
   RxnGroupedArtistData groupedArtistData = RxnGroupedArtistData();
   RxnPlaylist playlistData = RxnPlaylist();
+  RxnAlbum albumData = RxnAlbum();
 
   clear() {
     artistSearchResults.clear();
@@ -143,11 +144,21 @@ class SongRepository {
 
   Future<void> getPlaylistDetails(String id) async {
     fetchType.value = FetchType.playlist;
-    debugPrint('Fecthing Artist data for $id');
+    debugPrint('Fecthing Playlist data for $id');
     final data = await _jioSaavnWrapper.fetchPlaylistDetails(id);
     playlistData.value = data?[1];
     debugPrint(
         'Completed fetching data for Playlist with id $id with result: ${data?[1] != null}, ${data?[1]?.songs.length}');
+    fetchType.value = null;
+  }
+
+  Future<void> getAlbumDetails(String id) async {
+    fetchType.value = FetchType.album;
+    debugPrint('Fecthing Album data for $id');
+    final data = await _jioSaavnWrapper.fetchAlbumDetails(id);
+    albumData.value = data?[1];
+    debugPrint(
+        'Completed fetching data for Album with id $id with result: ${data?[1] != null}, ${data?[1]}');
     fetchType.value = null;
   }
 }

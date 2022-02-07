@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -13,14 +11,7 @@ class StartupUtils {
     orientations ??= [DeviceOrientation.portraitUp];
     WidgetsFlutterBinding.ensureInitialized();
     SystemChrome.setPreferredOrientations(orientations);
-    if (Platform.isAndroid) {
-      SystemChrome.setSystemUIOverlayStyle(
-        const SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          statusBarIconBrightness: Brightness.dark,
-        ),
-      );
-    }
+    setSystemUi();
     await Hive.initFlutter();
     await Future.wait([
       FlutterDownloader.initialize(),
@@ -28,5 +19,16 @@ class StartupUtils {
       Hive.openBox('cache'),
       ...(futures ?? []),
     ]);
+  }
+
+  static setSystemUi() {
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
+        systemNavigationBarColor: Colors.white,
+      ),
+    );
   }
 }

@@ -8,4 +8,5 @@ class Routes {
   static const signUp = '/sign-up';
   static const searchResultPage = '/search-result-page';
   static const instrumentDetails = '/instrument-details';
+  static const artistInfo = '/artist-details';
 }

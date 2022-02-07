@@ -2,12 +2,12 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:varanasi/controllers/app_controller.dart';
+import 'package:varanasi/controllers/player_controller.dart';
 import 'package:varanasi/utils/constants.dart';
 
 class AudioPlayerHandler extends BaseAudioHandler
     with QueueHandler, SeekHandler {
-  AudioPlayer audioPlayer = Get.find<AppController>().audioPlayer;
+  AudioPlayer audioPlayer = Get.find<PlayerController>().audioPlayer;
 
   @override
   Future<void> prepare() {
@@ -241,7 +241,7 @@ class AudioPlayerHandler extends BaseAudioHandler
   Future customAction(String name, [Map<String, dynamic>? extras]) async {
     super.customAction(name, extras);
     switch (name) {
-      case updateMediaItemCustomEvent:
+      case ConstantStrings.updateMediaItemCustomEvent:
         final index = extras!['index'] as int?;
         try {
           mediaItem.add(index == null ? null : queue.value[index]);

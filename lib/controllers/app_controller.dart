@@ -1,11 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:varanasi/controllers/song_controller.dart';
 import 'package:varanasi/routes/routes.dart';
 
 class AppController extends GetxController {
-  final AudioPlayer audioPlayer = AudioPlayer();
   PageController pageController = PageController();
   ScrollController scrollController = ScrollController();
   final RxInt _currentIndex = RxInt(0);
@@ -49,6 +47,19 @@ class AppController extends GetxController {
         return 'Downloads';
     }
   }
+
+  void toNamed(String page, {dynamic arguments}) {
+    // pushNewScreenWithRouteSettings(
+    //   Get.context!,
+    //   settings: RouteSettings(name: page, arguments: arguments),
+    //   screen: pagesWithRoutes[page]!,
+    //   withNavBar: true,
+    //   pageTransitionAnimation: PageTransitionAnimation.cupertino,
+    // );
+    Get.toNamed(page, arguments: arguments);
+  }
+
+  T arguments<T>() => Get.arguments as T;
 
   @override
   void onReady() {

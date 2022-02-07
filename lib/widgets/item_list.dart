@@ -87,6 +87,7 @@ Widget buildVerticalItemsList(
   GestureTapCallback? onLoadMorePressed,
   bool isPaginated = false,
   bool showPaginationLoader = false,
+  bool sliver = false,
 }) {
   return list.isEmpty
       ? const SizedBox.shrink()

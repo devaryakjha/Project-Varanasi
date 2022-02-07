@@ -12,6 +12,7 @@ class CustAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool overrideBackPressed;
   final Color? elementColor;
   final Color? bgColor;
+  final bool? sliver;
 
   const CustAppBar({
     Key? key,
@@ -25,10 +26,13 @@ class CustAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.overrideBackPressed = false,
     this.elementColor,
     this.bgColor,
+    this.sliver = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = Theme.of(context);
+    TextTheme? textTheme = theme.textTheme;
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       color: bgColor,
@@ -46,10 +50,8 @@ class CustAppBar extends StatelessWidget implements PreferredSizeWidget {
                         child: GestureDetector(
                           behavior: HitTestBehavior.translucent,
                           onTap: () {
-                            if (!overrideBackPressed) Get.back(result: result);
-                            if (onBackPressed != null) {
-                              onBackPressed!();
-                            }
+                            Get.back();
+                            if (onBackPressed != null) onBackPressed!();
                           },
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
@@ -66,12 +68,11 @@ class CustAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ((title != null)
                         ? Text(
                             title!,
-                            style:
-                                Theme.of(context).textTheme.headline6?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: 1,
-                                      color: elementColor,
-                                    ),
+                            style: textTheme.headline6?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1,
+                              color: elementColor,
+                            ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           )

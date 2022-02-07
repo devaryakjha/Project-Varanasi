@@ -1,1 +1,1 @@
-enum FetchType { initialData, searchResult, groupedArtist, playlist }
+enum FetchType { initialData, searchResult, groupedArtist, playlist, album }

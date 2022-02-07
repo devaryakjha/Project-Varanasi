@@ -21,21 +21,26 @@ class ArtistInstrumentDetails extends StatelessWidget {
               ? const Loader()
               : controller.groupedArtistData == null
                   ? const SizedBox.shrink()
-                  : Column(
-                      children: [
-                        ...buildItemsList(
-                          context,
-                          controller.groupedArtistData!.topAlbums,
-                          'Top Albums',
-                          (d) => CommonListingWidget(d),
-                        ),
-                        ...buildItemsList(
-                          context,
-                          controller.groupedArtistData!.topSongs,
-                          'Top Songs',
-                          (d) => CommonListingWidget(d),
-                        ),
-                      ],
+                  : SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          ...buildItemsList(
+                            context,
+                            controller.groupedArtistData!.topAlbums,
+                            'Top Albums',
+                            (d) => CommonListingWidget(d),
+                          ),
+                          ...buildItemsList(
+                            context,
+                            controller.groupedArtistData!.topSongs,
+                            'Top Songs',
+                            (d) => CommonListingWidget(d),
+                          ),
+                        ],
+                      ),
                     ),
         ));
   }

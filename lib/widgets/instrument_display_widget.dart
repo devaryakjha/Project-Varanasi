@@ -3,9 +3,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jiosaavn_wrapper/jiosaavn_wrapper_v2.dart';
+import 'package:varanasi/controllers/player_controller.dart';
 import 'package:varanasi/controllers/song_controller.dart';
 import 'package:varanasi/enums/instrument_type.dart';
 import 'package:varanasi/routes/routes.dart';
+
+import '../controllers/app_controller.dart';
 
 class InstrumentDisplayGeneric extends GetView<SongController> {
   InstrumentDisplayGeneric({
@@ -21,7 +24,8 @@ class InstrumentDisplayGeneric extends GetView<SongController> {
             : subtitle.capitalize!,
         isHorizontal = scrollDirection == Axis.horizontal,
         super(key: key ?? ValueKey(image));
-
+  PlayerController get _playerController => Get.find();
+  AppController get appController => Get.find();
   final String image, title, subtitle;
   final InstrumentType type;
   final bool isCircle;
@@ -79,20 +83,13 @@ class InstrumentDisplayGeneric extends GetView<SongController> {
               isThreeLine: true,
               onTap: onTap,
               leading: ClipRRect(
-                borderRadius: isCircle
-                    ? BorderRadius.circular(999)
-                    : BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(isCircle ? 999 : 12),
                 child: CachedNetworkImage(
                   imageUrl: image,
                   width: Get.width * 0.13,
-                  placeholder: (context, error) {
-                    return const Center(
-                      child: Icon(
-                        Icons.music_note_outlined,
-                        color: Colors.black,
-                      ),
-                    );
-                  },
+                  placeholder: (context, error) => const Center(
+                    child: Icon(Icons.music_note_outlined, color: Colors.grey),
+                  ),
                 ),
               ),
               title: Text(
@@ -128,7 +125,7 @@ class PlayListListingWidget extends InstrumentDisplayGeneric {
   final Playlist playlist;
   @override
   onTap() {
-    Get.toNamed(Routes.instrumentDetails, arguments: {
+    Get.find<AppController>().toNamed(Routes.instrumentDetails, arguments: {
       "data": playlist,
       "type": InstrumentType.playlist,
     });
@@ -152,7 +149,7 @@ class ArtistListingWidget extends InstrumentDisplayGeneric {
   final Artist artist;
   @override
   onTap() {
-    Get.toNamed(Routes.instrumentDetails, arguments: {
+    Get.find<AppController>().toNamed(Routes.instrumentDetails, arguments: {
       "data": artist,
       "type": InstrumentType.artist,
     });
@@ -176,10 +173,19 @@ class AlbumListingWidget extends InstrumentDisplayGeneric {
   final Album album;
   @override
   onTap() {
-    Get.toNamed(Routes.instrumentDetails, arguments: {
-      "data": album,
-      "type": InstrumentType.album,
-    });
+    if (appController.arguments() != null) {
+      Get.offAndToNamed(Routes.instrumentDetails, arguments: {
+        "data": album,
+        "type": InstrumentType.album,
+        "og": appController.arguments(),
+      });
+    } else {
+      Get.find<AppController>().toNamed(Routes.instrumentDetails, arguments: {
+        "data": album,
+        "type": InstrumentType.album,
+      });
+    }
+    controller.getAlbumDetails(album.token);
   }
 }
 
@@ -200,7 +206,9 @@ class SongListingWidget extends InstrumentDisplayGeneric {
   final Song song;
 
   @override
-  onTap() {}
+  onTap() {
+    _playerController.selectSong(song);
+  }
 }
 
 class CommonListingWidget extends StatelessWidget {

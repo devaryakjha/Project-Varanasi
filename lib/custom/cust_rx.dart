@@ -1,3 +1,4 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:get/get.dart';
 import 'package:jiosaavn_wrapper/jiosaavn_wrapper_v2.dart';
 import 'package:varanasi/enums/fetch_type.dart';
@@ -48,4 +49,8 @@ class RxListSong extends RxList<Song> {
 
 class RxnGroupedArtistData extends Rxn<GroupedArtistData> {
   RxnGroupedArtistData([GroupedArtistData? initialData]) : super(initialData);
+}
+
+class RxnMediaItem extends Rxn<MediaItem> {
+  RxnMediaItem([MediaItem? initialData]) : super(initialData);
 }
