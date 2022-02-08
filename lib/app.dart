@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
+import 'package:get/get.dart';
 import 'package:varanasi/basewidget.dart';
 import 'package:varanasi/common/initial_bindings.dart';
 import 'package:varanasi/routes/pages.dart';
@@ -20,13 +20,16 @@ class Varanasi extends StatelessWidget {
       initialRoute: Routes.home,
       theme: theme,
       routingCallback: (route) {
+        debugPrint(route?.current);
         navBarOverlayEntry.markNeedsBuild();
+        if (route?.current == Routes.fullScreenPlayer) {
+          Constant.keys.baseKey.currentState?.setState(() {});
+        }
       },
       builder: (ctx, child) => Stack(
         children: [
-          BaseWidget(child: child!),
+          BaseWidget(child: child!, key: Constant.keys.baseKey),
           Overlay(
-            key: Constant.keys.baseKey,
             initialEntries: [
               navBarOverlayEntry,
             ],

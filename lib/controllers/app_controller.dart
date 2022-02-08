@@ -1,14 +1,18 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:varanasi/controllers/song_controller.dart';
 import 'package:varanasi/routes/routes.dart';
+
+import '../widgets/nav_bar.dart';
 
 class AppController extends GetxController {
   PageController pageController = PageController();
   ScrollController scrollController = ScrollController();
   final RxInt _currentIndex = RxInt(0);
   Rxn<double> fab = Rxn(320);
-
+  final RxnString currentRoute = RxnString(Routes.home);
   int get currentIndex => _currentIndex.value;
 
   set currentIndex(int index) {
@@ -48,16 +52,8 @@ class AppController extends GetxController {
     }
   }
 
-  void toNamed(String page, {dynamic arguments}) {
-    // pushNewScreenWithRouteSettings(
-    //   Get.context!,
-    //   settings: RouteSettings(name: page, arguments: arguments),
-    //   screen: pagesWithRoutes[page]!,
-    //   withNavBar: true,
-    //   pageTransitionAnimation: PageTransitionAnimation.cupertino,
-    // );
-    Get.toNamed(page, arguments: arguments);
-  }
+  void toNamed(String page, {dynamic arguments}) =>
+      Get.toNamed(page, arguments: arguments);
 
   T arguments<T>() => Get.arguments as T;
 
