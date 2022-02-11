@@ -58,7 +58,7 @@ class SearchPage extends GetView<SongController> {
                           context,
                           controller.searchResult!.data.songs,
                           'Songs',
-                          (d) => CommonListingWidget(d),
+                          (d) => CommonListingWidget(d, parentId: ''),
                           onSeeAllPressed: () {
                             Get.find<AppController>().toNamed(
                               Routes.searchResultPage,

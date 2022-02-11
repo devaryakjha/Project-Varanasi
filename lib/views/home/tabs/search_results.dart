@@ -31,8 +31,8 @@ class SearchResultPage extends GetView<SongController> {
                   context,
                   list,
                   null,
-                  (d) =>
-                      CommonListingWidget(d, scrollDirection: Axis.horizontal),
+                  (d) => CommonListingWidget(d,
+                      scrollDirection: Axis.horizontal, parentId: ''),
                   isPaginated: controller.hasMorePaginationData,
                   onLoadMorePressed: () =>
                       controller.nextPage(appController.arguments()),

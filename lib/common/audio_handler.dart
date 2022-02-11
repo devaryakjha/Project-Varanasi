@@ -13,13 +13,16 @@ class AudioPlayerHandler extends BaseAudioHandler
     audioPlayer.sequenceStateStream
         .map((state) => state?.effectiveSequence)
         .distinct()
-        .map((s) => s?.map((s) => s.tag as MediaItem))
-        .listen((event) {
-      if (event != null) {
-        queue.add([...event]);
-      }
+        .map((s) => s?.map((s) => s.tag as MediaItem).toList())
+        .listen((e) {
+      if (e != null) queue.add(e);
     });
     audioPlayer.playbackEventStream.map(_transformEvent).pipe(playbackState);
+    audioPlayer.currentIndexStream.listen((event) {
+      if (event != null && queue.value.length > event) {
+        mediaItem.add(queue.value[event]);
+      }
+    });
     return super.prepare();
   }
 
@@ -27,7 +30,6 @@ class AudioPlayerHandler extends BaseAudioHandler
   Future<void> play() async {
     super.play();
     await audioPlayer.play();
-    mediaItem.add(queue.value[audioPlayer.currentIndex ?? 0]);
   }
 
   @override
@@ -137,44 +139,22 @@ class AudioPlayerHandler extends BaseAudioHandler
 
   @override
   Future<void> addQueueItem(MediaItem mediaItem) async {
-    final downloaded = (mediaItem.extras?['download'] as bool?) ?? false;
-    final index = queue.value.indexWhere(
-      (element) => downloaded
-          ? element.id == mediaItem.extras!['mediaUrl']
-          : element.id == mediaItem.id,
-    );
-    if (index != -1) {
-      final currentIndex = audioPlayer.currentIndex;
-      final position = audioPlayer.position;
-      await (audioPlayer.audioSource as ConcatenatingAudioSource?)
-          ?.removeAt(index);
-      await (audioPlayer.audioSource as ConcatenatingAudioSource?)?.insert(
-        index,
-        AudioSource.uri(
-          downloaded ? Uri.file(mediaItem.id) : Uri.parse(mediaItem.id),
-          tag: mediaItem,
-        ),
+    if (audioPlayer.audioSource != null) {
+      var source = audioPlayer.audioSource! as ConcatenatingAudioSource;
+      await source.add(
+        AudioSource.uri(Uri.parse(mediaItem.id), tag: mediaItem),
       );
-      if (currentIndex == index &&
-          (audioPlayer.processingState == ProcessingState.ready ||
-              audioPlayer.processingState == ProcessingState.buffering)) {
-        await audioPlayer.seek(position, index: index);
-        if (audioPlayer.playing) {
-          play();
-        }
-      }
     } else {
-      if (audioPlayer.audioSource != null) {
-        await (audioPlayer.audioSource as ConcatenatingAudioSource?)?.add(
-          AudioSource.uri(
-            downloaded ? Uri.file(mediaItem.id) : Uri.parse(mediaItem.id),
-            tag: mediaItem,
-          ),
-        );
-      } else {
-        await addQueueItems([mediaItem]);
-      }
+      await audioPlayer.setAudioSource(ConcatenatingAudioSource(children: [
+        AudioSource.uri(Uri.parse(mediaItem.id), tag: mediaItem),
+      ]));
     }
+  }
+
+  @override
+  Future<void> setShuffleMode(AudioServiceShuffleMode shuffleMode) async {
+    await audioPlayer.setShuffleModeEnabled(true);
+    super.setShuffleMode(shuffleMode);
   }
 
   @override

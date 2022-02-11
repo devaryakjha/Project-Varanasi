@@ -69,7 +69,8 @@ class MiniPlayer extends GetView<PlayerController> {
                                   controller.audioHandler.play();
                                 }
                               },
-                              icon: controller.isBuffering
+                              icon: controller.isBuffering ||
+                                      controller.loader.value
                                   ? const Loader(size: 28)
                                   : Icon(
                                       controller.isPlaying

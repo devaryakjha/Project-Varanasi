@@ -27,7 +27,7 @@ class PlayerController extends GetxController {
   PageController fullScreenThumbController = PageController(keepPage: false);
   Rx<Duration> positionStream = Rx(Duration.zero);
   RxnString currentParentId = RxnString();
-
+  RxBool loader = RxBool(false);
   MediaItem? get currentSong => currSong.value;
   bool get isSongSelected => currentSong != null;
   bool get isPlaying => playingStream.value;
@@ -71,13 +71,18 @@ class PlayerController extends GetxController {
       Get.find<AppController>().toNamed(Routes.fullScreenPlayer);
 
   void selectSong(Song song, String parentId) async {
+    if (song.isMinified) return;
+    loader.value = true;
     var currentSong = song.mediaItem;
-    if (parentId != currentParentId.value) {
+    if (this.currentSong == null) {
+      currSong.value = currentSong;
+    }
+    if (parentId != currentParentId.value && parentId.isNotEmpty) {
       var data = instrumentPool.getCachedDataWithoutType(parentId);
       var songs = songController.getSongList(data);
-      await audioHandler.addQueueItems(songs.map((e) => e.mediaItem).toList());
-      playFromId(currentSong.id);
       currentParentId.value = parentId;
+      await audioHandler.addQueueItems(songs.map((e) => e.mediaItem).toList());
+      await playFromId(currentSong.id);
     } else {
       bool isSelected = this.currentSong?.id == song.mediaURL;
       bool alreadyAdded = queueStream.any((e) => e.id == currentSong.id);
@@ -90,13 +95,15 @@ class PlayerController extends GetxController {
         isPlaying ? audioHandler.pause() : audioHandler.play();
       }
     }
+    loader.value = false;
   }
 
-  void playFromId(String id) => audioHandler.playFromMediaId(id);
+  Future<void> playFromId(String id) async =>
+      await audioHandler.playFromMediaId(id);
 
   Future<void> _handleCurrentMediaItemUpdate(MediaItem? mediaItem) async {
-    debugPrint('Updated Current Song');
     if (mediaItem != null) {
+      debugPrint('Updated Current Song');
       cachedNetworkImageProvider.value =
           CachedNetworkImageProvider(mediaItem.artUri.toString());
       if (cachedNetworkImageProvider.value != null) {

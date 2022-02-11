@@ -17,6 +17,8 @@ class InstrumentDisplayGeneric extends GetView<SongController> {
     required this.title,
     required String subtitle,
     required this.type,
+    this.isSong = false,
+    this.songId,
     Axis? scrollDirection = Axis.vertical,
   })  : isCircle = type == InstrumentType.artist,
         subtitle = (subtitle.isEmpty || subtitle == 'null')
@@ -24,86 +26,97 @@ class InstrumentDisplayGeneric extends GetView<SongController> {
             : subtitle.capitalize!,
         isHorizontal = scrollDirection == Axis.horizontal,
         super(key: key ?? ValueKey(image));
+
   PlayerController get _playerController => Get.find();
   AppController get appController => Get.find();
   final String image, title, subtitle;
   final InstrumentType type;
   final bool isCircle;
   final bool isHorizontal;
+  final bool isSong;
+  final String? songId;
 
   onTap() {}
 
   @override
   Widget build(BuildContext context) {
-    return !isHorizontal
-        ? GestureDetector(
-            onTap: onTap,
-            child: SizedBox.fromSize(
-              size: Size.square(Get.width * 0.45),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    height: Get.width * 0.4,
-                    width: Get.width * 0.4,
-                    decoration: BoxDecoration(
-                      shape: isCircle ? BoxShape.circle : BoxShape.rectangle,
-                      image: DecorationImage(
-                        image: CachedNetworkImageProvider(image),
-                        fit: BoxFit.cover,
-                      ),
-                      borderRadius: isCircle ? null : BorderRadius.circular(12),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    title,
-                    style: Theme.of(context).textTheme.subtitle1?.copyWith(
-                        fontWeight: FontWeight.bold, letterSpacing: 0.6),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Text(
-                    subtitle,
-                    style: Theme.of(context)
-                        .textTheme
-                        .subtitle1
-                        ?.copyWith(letterSpacing: 1, color: Colors.black54),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            ),
-          )
-        : SizedBox(
-            height: 80,
-            width: Get.width,
-            child: ListTile(
-              isThreeLine: true,
+    return Obx(() {
+      bool selected = _playerController.currentSong?.id == songId && isSong;
+      return !isHorizontal
+          ? GestureDetector(
               onTap: onTap,
-              leading: ClipRRect(
-                borderRadius: BorderRadius.circular(isCircle ? 999 : 12),
-                child: CachedNetworkImage(
-                  imageUrl: image,
-                  width: Get.width * 0.13,
-                  placeholder: (context, error) => const Center(
-                    child: Icon(Icons.music_note_outlined, color: Colors.grey),
-                  ),
+              child: SizedBox.fromSize(
+                size: Size.square(Get.width * 0.45),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      height: Get.width * 0.4,
+                      width: Get.width * 0.4,
+                      decoration: BoxDecoration(
+                        shape: isCircle ? BoxShape.circle : BoxShape.rectangle,
+                        image: DecorationImage(
+                          image: CachedNetworkImageProvider(image),
+                          fit: BoxFit.cover,
+                        ),
+                        borderRadius:
+                            isCircle ? null : BorderRadius.circular(12),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      title,
+                      style: Theme.of(context).textTheme.subtitle1?.copyWith(
+                          fontWeight: FontWeight.bold, letterSpacing: 0.6),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      subtitle,
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle1
+                          ?.copyWith(letterSpacing: 1, color: Colors.black54),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
               ),
-              title: Text(
-                title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+            )
+          : SizedBox(
+              height: 80,
+              width: Get.width,
+              child: ListTile(
+                selected: selected,
+                selectedTileColor: Colors.grey[200],
+                isThreeLine: false,
+                onTap: onTap,
+                selectedColor: Colors.black,
+                leading: ClipRRect(
+                  borderRadius: BorderRadius.circular(isCircle ? 999 : 12),
+                  child: CachedNetworkImage(
+                    imageUrl: image,
+                    width: Get.width * 0.13,
+                    placeholder: (context, error) => const Center(
+                      child:
+                          Icon(Icons.music_note_outlined, color: Colors.grey),
+                    ),
+                  ),
+                ),
+                title: Text(
+                  title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                subtitle: Text(
+                  subtitle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
-              subtitle: Text(
-                subtitle,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          );
+            );
+    });
   }
 }
 
@@ -202,6 +215,8 @@ class SongListingWidget extends InstrumentDisplayGeneric {
           subtitle: song.subtitle,
           type: InstrumentType.song,
           scrollDirection: scrollDirection,
+          isSong: true,
+          songId: song.mediaURL,
         );
 
   final Song song;

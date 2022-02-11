@@ -1,5 +1,4 @@
 import 'package:audio_service/audio_service.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -53,72 +52,19 @@ class Player extends GetView<PlayerController> {
                   SizedBox(
                     width: Get.width,
                     height: Get.width - 28,
-                    child: PageView.builder(
-                      clipBehavior: Clip.none,
-                      controller: controller.fullScreenThumbController,
-                      itemCount: controller.queueStream.length,
-                      onPageChanged: (index) {
-                        controller.audioHandler.skipToQueueItem(index);
-                      },
-                      itemBuilder: (context, index) {
-                        final song = controller.queueStream[index];
-                        return FlipCard(
-                          key: ValueKey(song.id),
-                          flipOnTouch:
-                              song.extras?['hasLyrics'] as bool? ?? false,
-                          front: Hero(
-                            tag: song.id,
-                            child: Container(
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 24),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                image: controller
-                                            .cachedNetworkImageProvider.value !=
-                                        null
-                                    ? DecorationImage(
-                                        image: controller
-                                            .cachedNetworkImageProvider.value!,
-                                        fit: BoxFit.cover,
-                                      )
-                                    : null,
-                              ),
-                            ),
-                          ),
-                          back: !(song.extras?['hasLyrics'] as bool? ?? false)
-                              ? const SizedBox.shrink()
-                              : Stack(
-                                  children: [
-                                    // LyricsWidget(
-                                    //   textColor: textColor,
-                                    //   lyrics: song.extras!['lyrics'] as String,
-                                    //   bgColor: bottomColor,
-                                    // ),
-                                    Positioned(
-                                      right: 24,
-                                      bottom: 0,
-                                      child: IconButton(
-                                        onPressed: () {
-                                          // Get.to(
-                                          //   () => LyricsWidget(
-                                          //     textColor: textColor,
-                                          //     lyrics: song.extras!['lyrics']
-                                          //         as String,
-                                          //     bgColor: bottomColor,
-                                          //     fullScreen: true,
-                                          //   ),
-                                          // );
-                                        },
-                                        icon: Icon(
-                                          Icons.fullscreen,
-                                          color: topColor,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                        );
-                      },
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 24),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        image:
+                            controller.cachedNetworkImageProvider.value != null
+                                ? DecorationImage(
+                                    image: controller
+                                        .cachedNetworkImageProvider.value!,
+                                    fit: BoxFit.cover,
+                                  )
+                                : null,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -182,19 +128,6 @@ class Player extends GetView<PlayerController> {
                         ),
                       ),
                     ),
-                    // trailing: IconButton(
-                    //   onPressed: () {
-                    //     if (isSongfavourite) {
-                    //       controller2.deleteFromFavouriteSong<MediaItem>(song);
-                    //     } else {
-                    //       controller2.addToFavouriteSong<MediaItem>(song);
-                    //     }
-                    //   },
-                    //   icon: isSongfavourite
-                    //       ? Icon(Icons.favorite, color: textColor)
-                    //       : const Icon(Icons.favorite_border),
-                    //   color: textColor,
-                    // ),
                   ),
                   SeekBar(
                     duration: controller.currentSong!.duration!,
@@ -209,8 +142,8 @@ class Player extends GetView<PlayerController> {
                       children: [
                         IconButton(
                           onPressed: () {
-                            // controller.audioHandler
-                            //     .setShuffleMode(AudioServiceShuffleMode.all);
+                            controller.audioHandler
+                                .setShuffleMode(AudioServiceShuffleMode.all);
                           },
                           icon: const Icon(Icons.shuffle_outlined),
                           color: textColor,
