@@ -12,10 +12,10 @@ import 'instrument_details/playlist.dart';
 
 // ignore: must_be_immutable
 class InstrumentDetailsPage extends GetView<SongController> {
-  const InstrumentDetailsPage({Key? key}) : super(key: key);
+  InstrumentDetailsPage({Key? key}) : super(key: key);
   AppController get appController => Get.find();
-  dynamic get data => appController.arguments()?['data'];
-  dynamic get type => appController.arguments()?['type'];
+  dynamic data = Get.arguments['data'];
+  dynamic type = Get.arguments['type'];
   Widget? get detailsPage {
     switch (type) {
       case InstrumentType.album:

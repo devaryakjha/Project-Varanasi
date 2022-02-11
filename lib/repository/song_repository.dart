@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jiosaavn_wrapper/jiosaavn_wrapper_v2.dart';
-import 'package:varanasi/controllers/cache_controller.dart';
+import 'package:varanasi/controllers/index.dart';
 import 'package:varanasi/custom/cust_rx.dart';
 import 'package:varanasi/enums/fetch_type.dart';
+import 'package:varanasi/enums/instrument_type.dart';
 
 class SongRepository {
   final JioSaavnWrapper _jioSaavnWrapper = JioSaavnWrapper.instance;
+  final InstrumentPool _instrumentPool = Get.find();
   final CacheController _cacheController = Get.find();
   final RxnFetchType fetchType = RxnFetchType();
   final RxInt pageNo = RxInt(1);
@@ -135,8 +137,15 @@ class SongRepository {
   Future<void> getArtistDetails(String token) async {
     fetchType.value = FetchType.groupedArtist;
     debugPrint('Fecthing Artist data for $token');
+    if (_instrumentPool.hasCachedData(token, InstrumentType.artist)) {
+      debugPrint('Found cached data for Artist with token $token');
+      groupedArtistData.value = _instrumentPool.getCahcedArtist(token);
+      fetchType.value = null;
+      return;
+    }
     final data = await _jioSaavnWrapper.fetchArtistDetails(token);
     groupedArtistData.value = data?[1];
+    _instrumentPool.cacheData(groupedArtistData.value, InstrumentType.artist);
     debugPrint(
         'Completed fetching data for Artist with token $token with result: ${data?[1] != null}');
     fetchType.value = null;
@@ -145,8 +154,15 @@ class SongRepository {
   Future<void> getPlaylistDetails(String id) async {
     fetchType.value = FetchType.playlist;
     debugPrint('Fecthing Playlist data for $id');
+    if (_instrumentPool.hasCachedData(id, InstrumentType.playlist)) {
+      debugPrint('Found cached data for Playlist with id $id');
+      playlistData.value = _instrumentPool.getCahcedPLaylist(id);
+      fetchType.value = null;
+      return;
+    }
     final data = await _jioSaavnWrapper.fetchPlaylistDetails(id);
     playlistData.value = data?[1];
+    _instrumentPool.cacheData(playlistData.value, InstrumentType.playlist);
     debugPrint(
         'Completed fetching data for Playlist with id $id with result: ${data?[1] != null}, ${data?[1]?.songs.length}');
     fetchType.value = null;
@@ -155,8 +171,15 @@ class SongRepository {
   Future<void> getAlbumDetails(String id) async {
     fetchType.value = FetchType.album;
     debugPrint('Fecthing Album data for $id');
+    if (_instrumentPool.hasCachedData(id, InstrumentType.album)) {
+      debugPrint('Found cached data for Album with id $id');
+      albumData.value = _instrumentPool.getCahcedAlbum(id);
+      fetchType.value = null;
+      return;
+    }
     final data = await _jioSaavnWrapper.fetchAlbumDetails(id);
     albumData.value = data?[1];
+    _instrumentPool.cacheData(albumData.value, InstrumentType.album);
     debugPrint(
         'Completed fetching data for Album with id $id with result: ${data?[1] != null}, ${data?[1]}');
     fetchType.value = null;

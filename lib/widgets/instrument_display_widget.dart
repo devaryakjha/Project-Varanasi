@@ -193,6 +193,7 @@ class SongListingWidget extends InstrumentDisplayGeneric {
   SongListingWidget({
     Key? key,
     required this.song,
+    required this.parentId,
     Axis? scrollDirection,
   }) : super(
           key: key,
@@ -204,21 +205,27 @@ class SongListingWidget extends InstrumentDisplayGeneric {
         );
 
   final Song song;
-
+  final String parentId;
   @override
   onTap() {
-    _playerController.selectSong(song);
+    _playerController.selectSong(song, parentId);
   }
 }
 
 class CommonListingWidget extends StatelessWidget {
-  const CommonListingWidget(
+  CommonListingWidget(
     this.data, {
     Key? key,
     this.scrollDirection,
-  }) : super(key: key);
+    this.parentId,
+  })  : assert(
+          data.runtimeType == Song ? parentId != null : parentId == null,
+          'Parent Id cannot be null for Song List Widget',
+        ),
+        super(key: key);
   final dynamic data;
   final Axis? scrollDirection;
+  final String? parentId;
   Widget getWidget() {
     switch (data.runtimeType) {
       case Playlist:
@@ -230,6 +237,7 @@ class CommonListingWidget extends StatelessWidget {
         return SongListingWidget(
           song: data,
           scrollDirection: scrollDirection,
+          parentId: parentId!,
         );
       case Album:
         return AlbumListingWidget(

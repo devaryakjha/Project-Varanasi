@@ -22,7 +22,8 @@ class Varanasi extends StatelessWidget {
       routingCallback: (route) {
         debugPrint(route?.current);
         navBarOverlayEntry.markNeedsBuild();
-        if (route?.current == Routes.fullScreenPlayer) {
+        if (route?.current == Routes.fullScreenPlayer ||
+            route?.previous == Routes.fullScreenPlayer) {
           Constant.keys.baseKey.currentState?.setState(() {});
         }
       },

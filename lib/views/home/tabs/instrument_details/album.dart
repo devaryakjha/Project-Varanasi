@@ -27,6 +27,7 @@ class AlbumInstrumentDetails extends GetView<SongController> {
                     (d) => CommonListingWidget(
                       d,
                       scrollDirection: Axis.horizontal,
+                      parentId: data.token,
                     ),
                   ),
       ),

@@ -23,13 +23,22 @@ class CustNavigationBar extends GetView<AppController> {
         : Hero(
             tag: 'AppBottomNavigationBar',
             child: Obx(
-              () {
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    const MiniPlayer(),
-                    BottomNavigationBar(
+              () => Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  const MiniPlayer(),
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border(
+                        top: Divider.createBorderSide(
+                          context,
+                          width: 0.5,
+                          color: Colors.grey[200],
+                        ),
+                      ),
+                    ),
+                    child: BottomNavigationBar(
                       elevation: 2,
                       backgroundColor: Colors.white,
                       currentIndex: controller.currentIndex,
@@ -57,9 +66,9 @@ class CustNavigationBar extends GetView<AppController> {
                         ),
                       ],
                     ),
-                  ],
-                );
-              },
+                  ),
+                ],
+              ),
             ),
           );
   }

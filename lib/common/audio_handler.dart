@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:varanasi/controllers/player_controller.dart';
-import 'package:varanasi/utils/constants.dart';
 
 class AudioPlayerHandler extends BaseAudioHandler
     with QueueHandler, SeekHandler {
@@ -28,6 +27,7 @@ class AudioPlayerHandler extends BaseAudioHandler
   Future<void> play() async {
     super.play();
     await audioPlayer.play();
+    mediaItem.add(queue.value[audioPlayer.currentIndex ?? 0]);
   }
 
   @override
@@ -59,9 +59,6 @@ class AudioPlayerHandler extends BaseAudioHandler
     Map<String, dynamic>? extras,
   ]) async {
     final index = queue.value.indexWhere((q) => q.id == mediaId);
-    if (index == 0) {
-      mediaItem.add(queue.value[index]);
-    }
     await audioPlayer.seek(Duration.zero, index: index);
     play();
   }
@@ -234,22 +231,6 @@ class AudioPlayerHandler extends BaseAudioHandler
       final index =
           queue.value.indexWhere((element) => element.id == mediaItem.id);
       await skipToQueueItem(index);
-    }
-  }
-
-  @override
-  Future customAction(String name, [Map<String, dynamic>? extras]) async {
-    super.customAction(name, extras);
-    switch (name) {
-      case ConstantStrings.updateMediaItemCustomEvent:
-        final index = extras!['index'] as int?;
-        try {
-          mediaItem.add(index == null ? null : queue.value[index]);
-        } catch (e) {
-          // Stack();
-        }
-        break;
-      default:
     }
   }
 

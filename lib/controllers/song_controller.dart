@@ -100,6 +100,19 @@ class SongController extends GetxController {
     }
   }
 
+  List<Song> getSongList(dynamic modal) {
+    switch (modal.runtimeType) {
+      case GroupedArtistData:
+        return (modal as GroupedArtistData).topSongs;
+      case Album:
+        return (modal as Album).songs ?? [];
+      case Playlist:
+        return (modal as Playlist).songs;
+      default:
+        return [];
+    }
+  }
+
   @override
   void onInit() {
     super.onInit();

@@ -29,6 +29,7 @@ class PlaylistInstrumentDetails extends StatelessWidget {
                     (d) => CommonListingWidget(
                       d,
                       scrollDirection: Axis.horizontal,
+                      parentId: data.id,
                     ),
                   ),
       ),

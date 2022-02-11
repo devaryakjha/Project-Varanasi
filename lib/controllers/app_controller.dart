@@ -1,11 +1,7 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:varanasi/controllers/song_controller.dart';
 import 'package:varanasi/routes/routes.dart';
-
-import '../widgets/nav_bar.dart';
 
 class AppController extends GetxController {
   PageController pageController = PageController();
