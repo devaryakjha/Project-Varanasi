@@ -537,7 +537,7 @@ packages:
   jiosaavn_wrapper:
     dependency: "direct main"
     description:
-      path: "../jiosaavn_wrapper"
+      path: "packages/jiosaavn_wrapper"
       relative: true
     source: path
     version: "1.0.0-dev.1"
