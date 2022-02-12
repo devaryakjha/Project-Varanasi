@@ -37,7 +37,10 @@ class ArtistInstrumentDetails extends StatelessWidget {
                             context,
                             controller.groupedArtistData!.topSongs,
                             'Top Songs',
-                            (d) => CommonListingWidget(d),
+                            (d) => CommonListingWidget(
+                              d,
+                              parentId: '',
+                            ),
                           ),
                         ],
                       ),

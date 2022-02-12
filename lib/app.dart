@@ -24,9 +24,11 @@ class Varanasi extends StatelessWidget {
         navBarOverlayEntry.markNeedsBuild();
         if (route?.current == Routes.fullScreenPlayer ||
             route?.previous == Routes.fullScreenPlayer) {
+          // ignore: invalid_use_of_protected_member
           Constant.keys.baseKey.currentState?.setState(() {});
         }
       },
+      defaultTransition: Transition.cupertino,
       builder: (ctx, child) => Stack(
         children: [
           BaseWidget(child: child!, key: Constant.keys.baseKey),

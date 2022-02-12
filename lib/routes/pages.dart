@@ -10,26 +10,21 @@ List<GetPage> get pages => [
       GetPage(
         name: Routes.home,
         page: () => const HomeScreen(),
-        participatesInRootNavigator: true,
       ),
       GetPage(
         name: Routes.searchResultPage,
-        page: () => const SearchResultPage(),
-        participatesInRootNavigator: true,
+        page: () => SearchResultPage(),
       ),
       GetPage(
         name: Routes.instrumentDetails,
         page: () => InstrumentDetailsPage(),
-        participatesInRootNavigator: true,
       ),
       GetPage(
         name: Routes.artistInfo,
         page: () => const ArtistDetails(),
-        participatesInRootNavigator: true,
       ),
       GetPage(
         name: Routes.fullScreenPlayer,
         page: () => const Player(),
-        participatesInRootNavigator: true,
       ),
     ];

@@ -17,7 +17,7 @@ class InstrumentPool extends GetxController {
         cachedPlaylists[data.id] = data;
         break;
       case InstrumentType.artist:
-        cachedArtists[data.token] = data;
+        cachedArtists[data.id] = data;
         break;
       default:
         cachedSongs[data.id] = data;

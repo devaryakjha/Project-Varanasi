@@ -1,3 +1,4 @@
+import 'package:another_flushbar/flushbar_helper.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ class PlayerController extends GetxController {
   AudioPlayer audioPlayer = AudioPlayer();
   RxnMediaItem currSong = RxnMediaItem();
   RxBool playingStream = RxBool(false);
+  RxBool shuffleModeStrem = RxBool(false);
   Rx<PlaybackEvent> playBackStream = Rx(PlaybackEvent());
   RxList<MediaItem> queueStream = RxList();
   Rxn<CachedNetworkImageProvider> cachedNetworkImageProvider = Rxn();
@@ -28,13 +30,17 @@ class PlayerController extends GetxController {
   Rx<Duration> positionStream = Rx(Duration.zero);
   RxnString currentParentId = RxnString();
   RxBool loader = RxBool(false);
+  Rx<LoopMode> loopMode = Rx(LoopMode.off);
+
   MediaItem? get currentSong => currSong.value;
   bool get isSongSelected => currentSong != null;
   bool get isPlaying => playingStream.value;
   bool get isBuffering =>
-      playBackStream.value.processingState == ProcessingState.buffering;
+      playBackStream.value.processingState == ProcessingState.buffering ||
+      loader.value;
   bool get hasNext => audioPlayer.hasNext;
   bool get hasPrev => audioPlayer.hasPrevious;
+  bool get isShuffleModeEnabled => shuffleModeStrem.value;
   Color? get topColor => paletteGenerator.value?.mutedColor?.color;
   Color? get bottomColor =>
       paletteGenerator.value?.darkMutedColor?.color ?? topColor;
@@ -42,8 +48,28 @@ class PlayerController extends GetxController {
       paletteGenerator.value?.darkMutedColor?.bodyTextColor.withOpacity(1) ??
       paletteGenerator.value?.mutedColor?.bodyTextColor.withOpacity(1);
   Duration get currentSongPosition => positionStream.value;
-  Future<void> handleSeek(Duration position) async =>
-      audioHandler.seek(position);
+  Future<void> handleSeek(Duration p) async => audioHandler.seek(p);
+  Future<void> toggleShuffleMode() =>
+      audioHandler.setShuffleMode(isShuffleModeEnabled
+          ? AudioServiceShuffleMode.none
+          : AudioServiceShuffleMode.all);
+  BuildContext? get context => Get.context;
+  IconData get repeatIcon {
+    return {
+      LoopMode.all: Icons.repeat_on_outlined,
+      LoopMode.off: Icons.repeat,
+      LoopMode.one: Icons.repeat_one_on_outlined
+    }[loopMode.value]!;
+  }
+
+  Future<void> skipNext() => audioHandler.skipToNext();
+  Future<void> skipPrevious() => audioHandler.skipToPrevious();
+  Future<void> play() => isPlaying ? audioHandler.pause() : audioHandler.play();
+  Future<void> chanageRepeatMode() => audioHandler.setRepeatMode({
+        LoopMode.all: AudioServiceRepeatMode.none,
+        LoopMode.one: AudioServiceRepeatMode.all,
+        LoopMode.off: AudioServiceRepeatMode.one
+      }[loopMode.value]!);
 
   @override
   Future<void> onReady() async {
@@ -57,9 +83,10 @@ class PlayerController extends GetxController {
       ),
     );
     await audioHandler.prepare();
-
+    ever(shuffleModeStrem, _handleShuffleModeChange);
     ever(currSong, _handleCurrentMediaItemUpdate);
-
+    loopMode.bindStream(audioPlayer.loopModeStream);
+    shuffleModeStrem.bindStream(audioPlayer.shuffleModeEnabledStream);
     currSong.bindStream(audioHandler.mediaItem);
     playingStream.bindStream(audioPlayer.playingStream);
     playBackStream.bindStream(audioPlayer.playbackEventStream);
@@ -112,5 +139,11 @@ class PlayerController extends GetxController {
         );
       }
     }
+  }
+
+  void _handleShuffleModeChange(bool enabled) {
+    FlushbarHelper.createInformation(
+            message: '${enabled ? 'Enabled' : 'Disabled'} shuffle mode')
+        .show(context!);
   }
 }

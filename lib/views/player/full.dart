@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:marquee/marquee.dart';
 import 'package:varanasi/controllers/player_controller.dart';
 import 'package:varanasi/widgets/cust_appbar.dart';
+import 'package:varanasi/widgets/loader.dart';
 import 'package:varanasi/widgets/seek_bar.dart';
 
 class Player extends GetView<PlayerController> {
@@ -141,19 +142,16 @@ class Player extends GetView<PlayerController> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         IconButton(
-                          onPressed: () {
-                            controller.audioHandler
-                                .setShuffleMode(AudioServiceShuffleMode.all);
-                          },
-                          icon: const Icon(Icons.shuffle_outlined),
+                          onPressed: controller.toggleShuffleMode,
+                          icon: Icon(controller.isShuffleModeEnabled
+                              ? Icons.shuffle_on_outlined
+                              : Icons.shuffle_outlined),
                           color: textColor,
                           disabledColor: textColor?.withOpacity(0.35),
                         ),
                         IconButton(
-                          onPressed: controller.audioPlayer.hasPrevious
-                              ? () {
-                                  controller.audioHandler.skipToPrevious();
-                                }
+                          onPressed: controller.hasPrev
+                              ? controller.skipPrevious
                               : null,
                           icon: const Icon(Icons.skip_previous_outlined),
                           iconSize: 48,
@@ -161,17 +159,9 @@ class Player extends GetView<PlayerController> {
                           disabledColor: textColor?.withOpacity(0.35),
                         ),
                         IconButton(
-                          onPressed: () {
-                            if (controller.isPlaying) {
-                              controller.audioHandler.pause();
-                            } else {
-                              controller.audioHandler.play();
-                            }
-                          },
+                          onPressed: controller.play,
                           icon: controller.isBuffering
-                              ? CircularProgressIndicator(
-                                  valueColor: AlwaysStoppedAnimation(textColor),
-                                )
+                              ? const Loader()
                               : Icon(
                                   controller.isPlaying
                                       ? Icons.pause_circle_filled_outlined
@@ -182,22 +172,16 @@ class Player extends GetView<PlayerController> {
                           disabledColor: textColor?.withOpacity(0.35),
                         ),
                         IconButton(
-                          onPressed: controller.audioPlayer.hasNext
-                              ? () {
-                                  controller.audioHandler.skipToNext();
-                                }
-                              : null,
+                          onPressed:
+                              controller.hasNext ? controller.skipNext : null,
                           icon: const Icon(Icons.skip_next_outlined),
                           iconSize: 48,
                           color: textColor,
                           disabledColor: textColor?.withOpacity(0.35),
                         ),
                         IconButton(
-                          onPressed: () {
-                            controller.audioHandler
-                                .setRepeatMode(AudioServiceRepeatMode.all);
-                          },
-                          icon: const Icon(Icons.repeat),
+                          onPressed: controller.chanageRepeatMode,
+                          icon: Icon(controller.repeatIcon),
                           color: textColor,
                           disabledColor: textColor?.withOpacity(0.35),
                         ),
