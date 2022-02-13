@@ -29,6 +29,7 @@ class SongController extends GetxController {
       repository.getInstrumentDetails(searchQuery, SearchResultType.song);
   Future<void> fetchPlaylistDetails() =>
       repository.getInstrumentDetails(searchQuery, SearchResultType.playlist);
+  Future<Song?> getSongDetails(String id) => repository.getSongDetails(id);
   List getsearchResultsValue(dynamic type) {
     if (type is Map) {
       type = type['type'];

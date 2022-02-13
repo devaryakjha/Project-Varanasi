@@ -184,4 +184,9 @@ class SongRepository {
         'Completed fetching data for Album with id $id with result: ${data?[1] != null}, ${data?[1]}');
     fetchType.value = null;
   }
+
+  Future<Song?> getSongDetails(String id) async {
+    fetchType.value = FetchType.song;
+    return _jioSaavnWrapper.fetchSongDetails(id);
+  }
 }

@@ -105,6 +105,7 @@ class Parser {
   }
 
   static Song _parseSong(dynamic map) {
+    print(map);
     bool hasMoreInfo = map?['more_info'] != null;
     bool has320kbps =
         (!hasMoreInfo ? (map?['320kbps']) : map?['more_info']?['320kbps']) ==

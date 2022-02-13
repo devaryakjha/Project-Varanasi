@@ -98,7 +98,12 @@ class PlayerController extends GetxController {
       Get.find<AppController>().toNamed(Routes.fullScreenPlayer);
 
   void selectSong(Song song, String parentId) async {
-    if (song.isMinified) return;
+    if (song.isMinified) {
+      var tempSong = await songController.getSongDetails(song.id);
+      if (tempSong != null) {
+        song = tempSong;
+      }
+    }
     loader.value = true;
     var currentSong = song.mediaItem;
     if (this.currentSong == null) {

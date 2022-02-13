@@ -32,4 +32,7 @@ class ApiEndPoints {
       Uri.parse(
         '$baseURL?__call=webapi.get&_format=json&_marker=0&ctx=wap6dot0t&type=album&token=$token',
       );
+  static Uri songDetails(String id) => Uri.parse(
+        '$baseURL?__call=song.getDetails&_format=json&_marker=0&ctx=wap6dot0t&pids=$id',
+      );
 }

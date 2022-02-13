@@ -95,4 +95,14 @@ class JioSaavnWrapper {
       rethrow;
     }
   }
+
+  Future<Song?> fetchSongDetails(String id) async {
+    try {
+      final response = await http.get(ApiEndPoints.songDetails(id));
+      final map = Map<String, dynamic>.from(jsonDecode(response.body));
+      return PluginFactoryV2.parseSongData(map[id]);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

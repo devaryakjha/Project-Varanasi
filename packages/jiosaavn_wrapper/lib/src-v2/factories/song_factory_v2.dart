@@ -88,4 +88,6 @@ class PluginFactoryV2 {
 
   static Album parseAlbumData(map) =>
       Parser.parse(map, type: SearchResultType.album);
+  static Song parseSongData(map) =>
+      Parser.parse(map, type: SearchResultType.song);
 }
